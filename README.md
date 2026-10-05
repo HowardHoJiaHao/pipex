@@ -2,8 +2,20 @@
 
 > 42 Common Core · Rank 02
 
-The purpose of this project is to learn how UNIX processes, pipes and file descriptor redirection work by reproducing a shell pipeline in C.
+The purpose of this project is the discovery in detail of the UNIX mechanism – pipes and child processes – by reproducing a shell pipeline in C. The following C system/API calls are required to complete the project:
 
+- [`execve`](https://man7.org/linux/man-pages/man2/execve.2.html) (replace the current process with the program to be executed)
+- [`pipe`](https://man7.org/linux/man-pages/man2/pipe.2.html) (create a pipe so one process can send data to another)
+- [`fork`](https://man7.org/linux/man-pages/man2/fork.2.html) (create a child process)
+- [`dup2`](https://man7.org/linux/man-pages/man2/dup2.2.html) (redirect standard input / output to a file or a pipe)
+- [`open`](https://man7.org/linux/man-pages/man2/open.2.html) / [`close`](https://man7.org/linux/man-pages/man2/close.2.html) (open the input and output files, close file descriptors that are no longer needed)
+- [`access`](https://man7.org/linux/man-pages/man2/access.2.html) (check that a command exists and can be executed)
+- [`waitpid`](https://man7.org/linux/man-pages/man2/waitpid.2.html) (wait for a child process to finish and get its exit status)
+- [`exit`](https://man7.org/linux/man-pages/man3/exit.3.html) (end the process with an exit status)
+- [`perror`](https://man7.org/linux/man-pages/man3/perror.3.html) / [`write`](https://man7.org/linux/man-pages/man2/write.2.html) (print error messages)
+- [`malloc`](https://man7.org/linux/man-pages/man3/malloc.3.html) / [`free`](https://man7.org/linux/man-pages/man3/free.3.html) (allocate and release memory for the split command and paths)
+
+## Usage
 ```bash
 ./pipex infile "cmd1" "cmd2" outfile
 ```
@@ -42,21 +54,6 @@ The command string is split on spaces into the program name and its arguments (`
 - Handles exactly two commands; multiple pipes and `here_doc` (the bonus part) are not implemented.
 - Arguments are split on spaces only, so quotes are not interpreted: `"grep 'hello world'"` will not work as it does in the shell.
 
-## Functions used
-[`open`](https://man7.org/linux/man-pages/man2/open.2.html),
-[`close`](https://man7.org/linux/man-pages/man2/close.2.html),
-[`write`](https://man7.org/linux/man-pages/man2/write.2.html),
-[`pipe`](https://man7.org/linux/man-pages/man2/pipe.2.html),
-[`fork`](https://man7.org/linux/man-pages/man2/fork.2.html),
-[`dup2`](https://man7.org/linux/man-pages/man2/dup2.2.html),
-[`execve`](https://man7.org/linux/man-pages/man2/execve.2.html),
-[`access`](https://man7.org/linux/man-pages/man2/access.2.html),
-[`waitpid`](https://man7.org/linux/man-pages/man2/waitpid.2.html),
-[`perror`](https://man7.org/linux/man-pages/man3/perror.3.html),
-[`malloc`](https://man7.org/linux/man-pages/man3/malloc.3.html),
-[`free`](https://man7.org/linux/man-pages/man3/free.3.html),
-[`exit`](https://man7.org/linux/man-pages/man3/exit.3.html)
-
 ## Clone
 Clone the repository:
 ```bash
@@ -64,14 +61,14 @@ git clone https://github.com/HowardHoJiaHao/pipex.git
 ```
 
 ## Compile and Run
-To compile, `cd` into the cloned directory and:
+This repository contains the mandatory part only (no bonus). To compile, `cd` into the cloned directory and run the following command:
 ```bash
 make
 ```
 
 This builds the `pipex` executable. Other targets: `make clean` (remove object files), `make fclean` (also remove `pipex`) and `make re` (rebuild from scratch).
 
-Example:
+To run the program, follow the [Usage](#usage) above. For example:
 ```bash
 printf "hello 42\nworld\nhello again\n" > infile
 ./pipex infile "grep hello" "wc -l" outfile
